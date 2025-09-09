@@ -1,6 +1,4 @@
 config/
 logs/
-pending_alphas/
-simulated_alphas/
-progress_alphas/
 thesis/
+archive_files/

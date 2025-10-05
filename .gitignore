@@ -2,3 +2,6 @@ config/
 logs/
 thesis/
 archive_files/
+simulated_alphas/
+alpha-env/
+scripts/

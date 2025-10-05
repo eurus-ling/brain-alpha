@@ -222,6 +222,7 @@ class AlphaSimulator:
         self.simulated_alphas = f'simulated_alphas/simulated_alphas_{loc_dt.strftime(fmt)}.csv'
         self.progress_file = "progress_alphas/progress_state.json"   ### 改动点：新增进度文件，断点续跑使用
         self.fail_simulations = "progress_alphas/fail_simulations.csv"
+        self.negative_alphas = "pending_alphas/negative_alphas.csv"
         self.max_concurrent = max_concurrent
         self.active_simulations = []
         self.simulation_start_times = {}   ### 改动点：记录每个 simulation 的开始时间
@@ -376,8 +377,8 @@ class AlphaSimulator:
                 if status == 'ERROR':
                     logging.error(f"{simulation_progress_url} request get ERROR status")
                     with open(self.fail_simulations, 'a', newline = '') as file:
-                        writer = csv.DictWriter(file, fieldnames = ["id"])
-                        writer.writerow({"id": simulation_progress.json().get("id")})
+                        writer = csv.DictWriter(file, fieldnames = ["url"])
+                        writer.writerow({"url": simulation_progress_url})
                     return simulation_progress.json()
         except requests.exceptions.RequestException as e:
             logging.error(f"Error fetching simulation progress: {e}")
@@ -404,8 +405,8 @@ class AlphaSimulator:
                         sim_data = {"id": "unknown"}
                         logging.error(f"Failed to fetch simulation id for timeout case: {e}")
                     with open(self.fail_simulations, 'a', newline='') as file:
-                        writer = csv.DictWriter(file, fieldnames=["id"])
-                        writer.writerow({"id": sim_data.get("id")})
+                        writer = csv.DictWriter(file, fieldnames=["url"])
+                        writer.writerow({"url":sim_url})
                     self.active_simulations.remove(sim_url)
                     self.simulation_start_times.pop(sim_url, None)   ### 移除计时
                     self._save_progress()
